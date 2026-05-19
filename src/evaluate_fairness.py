@@ -13,12 +13,14 @@ from utils.gdp import gdp
 from models.networks import (
     NeuralWrapper,
     ExampleNeuralNet,
+    ExampleNN_FREM,
+    FREM
 )
 
 from models.decomposition_models import RegularizedKRR, RegularizedSVR
 from models.kernel_facil import FairKernelLearningKRR
 from models.special import Dummy
-
+from models.linear_inlp import LinearINPWithSVR # Rebuttal
 #
 from utils.experimental_setup import cross_validate, dict_conversion
 from utils.pairwise_fairness import pairwise_fairness
@@ -67,7 +69,8 @@ def evaluate_cont_fairness(y_hat, y_true, prot_attr):
 
 ###################################################################################################
 
-print(torch.cuda.get_device_properties("cuda"))
+
+#print(torch.cuda.get_device_properties("cuda"))
 
 # Read command line arguments
 parser = argparse.ArgumentParser()
@@ -78,7 +81,7 @@ parser.add_argument(
 parser.add_argument(
     "--dataset",
     help="File name suffix",
-    default="Crime",  # [Crime, ACSIncome, ACSTravelTime]
+    default="ACSIncome",  # [Crime, ACSIncome, ACSTravelTime]
 )
 parser.add_argument(
     "--alpha",
@@ -92,47 +95,126 @@ args = parser.parse_args()
 
 dataset = args.dataset
 
-if dataset == "Crime":
-    nystroem = None
-    fixed_param_per_method = {
-        "SVR": (0.01, 0.05, 0.75),  # epsilon, gamma, C
-        "KRR": (0.25, 0.05),  # alpha, gamma
-    }
-    param_dict = {
-        "KRR-FKD": [0, 5, 10, 18],
-        "SVR-FKD": [0, 5, 30, 45, 60, 80],
-        "KRR-FKL": [0, 0.05, 0.25, 0.6, 1],
-        "NN-HGR": [0, 0.025, 0.1, 0.2, 0.5],
-    }
+if args.suffix == "Rebuttal":
+    if dataset == "Crime":
+        nystroem = None
+        fixed_param_per_method = {
+            "SVR": (0.01, 0.05, 0.75),  # epsilon, gamma, C
+            "KRR": (0.25, 0.05),  # alpha, gamma
+        }
+        param_dict = {
+            "SVR-FKD": [0, 5, 30, 45, 60, 80],
+            "NN-HGR": [0, 0.025, 0.1, 0.2, 0.5],
+            "NN-HGR-L": [0, 0.025, 0.1, 0.2, 0.5],
+        }
 
-elif dataset == "ACSIncome":
-    nystroem = None
-    fixed_param_per_method = {
-        "SVR": (0.005, 0.05, 0.5),  # epsilon, gamma, C
-        "KRR": (0.25, 0.05),  # alpha, gamma
-    }
-    param_dict = {
-        "NN-HGR": [0, 0.00625, 0.0125, 0.05],
-        "KRR-FKD": [0, 15, 20, 30],
-        "SVR-FKD": [0, 45, 60, 80, 100],
-        "KRR-FKL": [0, 0.05, 0.25, 1],
-    }
-    
-elif dataset == "ACSTravelTime":
-    nystroem = None
-    fixed_param_per_method = {
-        "SVR": (0.001, 0.01, 0.125),  # epsilon, gamma, C
-        "KRR": (0.25, 0.05),  # alpha, gamma
-    }
-    param_dict = {
-        "NN-HGR": [0, 0.00625, 0.0125, 0.05],
-        "KRR-FKD": [0, 15, 20, 30],
-        "SVR-FKD": [0, 45, 60, 100],
-        "KRR-FKL": [0, 0.5, 1, 2],
-    }
+    elif dataset == "ACSIncome":
+        nystroem = None
+        fixed_param_per_method = {
+            "SVR": (0.005, 0.05, 0.5),  # epsilon, gamma, C
+            "KRR": (0.25, 0.05),  # alpha, gamma
+        }
+        param_dict = {
+            "SVR-INPL": [0, 60, 100, 160, 180, 200],
+            "SVR-FKD": [0, 45, 60, 80, 100, 140], #
+            #"NN-HGR": [0, 0.00625, 0.0125, 0.05],
+            #"NN-HGR-L": [0, 0.00625, 0.0125, 0.05],
+        }     
+    elif dataset == "ACSTravelTime":
+        nystroem = None
+        fixed_param_per_method = {
+            "SVR": (0.001, 0.01, 0.125),  # epsilon, gamma, C
+            "KRR": (0.25, 0.05),  # alpha, gamma
+        }
+        param_dict = {
+            "SVR-FKD": [0, 45, 60, 100],
+            "NN-HGR": [0, 0.00625, 0.0125, 0.05],
+            "NN-HGR-L": [0, 0.00625, 0.0125, 0.05],
+        }
+    else:
+        raise Exception("Unknown dataset")
+elif args.suffix == "Appendix":
+    if dataset == "Crime":
+        nystroem = None
+        fixed_param_per_method = {
+            "SVR": (0.01, 0.05, 0.75),  # epsilon, gamma, C
+            "KRR": (0.25, 0.05),  # alpha, gamma
+        }
+        param_dict = {
+            "SVR-FKD": [0, 5, 30, 45, 60, 80],
+            "KRR-FKL": [0, 0.05, 0.25, 0.6, 1],
+            "NN-FREM": [0, 0.5, 1.5, 5, 10],
+            "NN-HGR-L": [0, 0.025, 0.1, 0.2, 0.5],
+        }
+
+    elif dataset == "ACSIncome":
+        nystroem = None
+        fixed_param_per_method = {
+            "SVR": (0.005, 0.05, 0.5),  # epsilon, gamma, C
+            "KRR": (0.25, 0.05),  # alpha, gamma
+        }
+        param_dict = {
+            "SVR-FKD": [0, 45, 60, 80, 100],
+            "KRR-FKL": [0, 0.05, 0.25, 1],
+            "NN-FREM": [0, 0.5, 1.5, 5, 10],
+            "NN-HGR-L": [0, 0.00625, 0.0125, 0.05],
+        }
+        
+    elif dataset == "ACSTravelTime":
+        nystroem = None
+        fixed_param_per_method = {
+            "SVR": (0.001, 0.01, 0.125),  # epsilon, gamma, C
+            "KRR": (0.25, 0.05),  # alpha, gamma
+        }
+        param_dict = {
+            "SVR-FKD": [0, 45, 60, 100],
+            "KRR-FKL": [0, 0.5, 1, 2],
+            "NN-FREM": [0, 0.5, 1.5, 5, 10],
+            "NN-HGR-L": [0, 0.00625, 0.0125, 0.05],
+        }
+    else:
+        raise Exception("Unknown dataset")
 else:
-    raise Exception("Unknown dataset")
+    if dataset == "Crime":
+        nystroem = None
+        fixed_param_per_method = {
+            "SVR": (0.01, 0.05, 0.75),  # epsilon, gamma, C
+            "KRR": (0.25, 0.05),  # alpha, gamma
+        }
+        param_dict = {
+            "KRR-FKD": [0, 5, 10, 18],
+            "SVR-FKD": [0, 5, 30, 45, 60, 80],
+            "KRR-FKL": [0, 0.05, 0.25, 0.6, 1],
+            "NN-HGR": [0, 0.025, 0.1, 0.2, 0.5],
+        }
 
+    elif dataset == "ACSIncome":
+        nystroem = None
+        fixed_param_per_method = {
+            "SVR": (0.005, 0.05, 0.5),  # epsilon, gamma, C
+            "KRR": (0.25, 0.05),  # alpha, gamma
+        }
+        param_dict = {
+            "NN-HGR": [0, 0.00625, 0.0125, 0.05],
+            "KRR-FKD": [0, 15, 20, 30],
+            "SVR-FKD": [0, 45, 60, 80, 100],
+            "KRR-FKL": [0, 0.05, 0.25, 1],
+        }
+        
+    elif dataset == "ACSTravelTime":
+        nystroem = None
+        fixed_param_per_method = {
+            "SVR": (0.001, 0.01, 0.125),  # epsilon, gamma, C
+            "KRR": (0.25, 0.05),  # alpha, gamma
+        }
+        param_dict = {
+            "NN-HGR": [0, 0.00625, 0.0125, 0.05],
+            "KRR-FKD": [0, 15, 20, 30],
+            "SVR-FKD": [0, 45, 60, 100],
+            "KRR-FKL": [0, 0.5, 1, 2],
+        }
+    else:
+        raise Exception("Unknown dataset")
 
 X, y, p = load_dataset(dataset)
 
@@ -182,6 +264,42 @@ BATCH_SIZE = 500
 ## Benchmark
 models = []
 measures = ["HGR [DP]", "GDP [DP]", "PF [EO]"]
+
+
+
+if "SVR-INPL" in param_dict.keys():
+    print("STARTING SVR-INPL")
+    param = param_dict["SVR-INPL"]
+
+    EPSILON, GAMMA, C_reg = fixed_param_per_method["SVR"]
+
+    if ALPHA_PRIME is not None:
+        tmp = ALPHA_PRIME
+    else:
+        tmp = 0.05
+
+    result, run_time = cross_validate(
+        LinearINPWithSVR,
+        {
+            "alpha_prime": tmp,
+            "gamma": GAMMA,
+            "C": C_reg,
+            "eps": EPSILON,
+        },
+        dict_conversion({"iterations": param}),
+        X,
+        y,
+        p,
+        folds=FOLDS,
+        eval_handle=evaluate_cont_fairness,
+        seed=SEED,
+    )
+
+    model_dictionary = {"param": param, "result": result.tolist(), "time": run_time}
+    result_dictionary["SVR-INPL"] = model_dictionary
+    models.append("SVR-INPL")
+
+    
 
 if "KRR-FKD" in param_dict.keys():
     print("STARTING KRR-FKD")
@@ -268,6 +386,31 @@ if "SVR-FKD" in param_dict.keys():
     models.append("SVR-FKD")
 
 
+if "NN-HGR-L" in param_dict.keys():
+    param = param_dict["NN-HGR-L"]  
+
+    result, run_time = cross_validate(
+        NeuralWrapper,
+        {
+            "network_cls": ExampleNeuralNet,
+            "num_epochs": EPOCHS,
+            "network_params": {"input_size": inp_dim, "output_size": 1, "size" : 250},
+            "penalty": chi_squared_l1_kde,
+            "batch_size": BATCH_SIZE,
+        },
+        dict_conversion({"lbd_reg": param}), 
+        X,
+        y,
+        p,
+        folds=FOLDS,
+        eval_handle=evaluate_cont_fairness,
+        seed=SEED,
+    )
+
+    model_dictionary = {"param": param, "result": result.tolist(), "time": run_time}
+    result_dictionary["NN-HGR-L"] = model_dictionary
+    models.append("NN-HGR-L")
+
 if "NN-HGR" in param_dict.keys():
     param = param_dict["NN-HGR"]  
 
@@ -292,6 +435,30 @@ if "NN-HGR" in param_dict.keys():
     model_dictionary = {"param": param, "result": result.tolist(), "time": run_time}
     result_dictionary["NN-HGR"] = model_dictionary
     models.append("NN-HGR")
+
+if "NN-FREM" in param_dict.keys():
+    param = param_dict["NN-FREM"]  
+
+    result, run_time = cross_validate(
+        FREM,
+        {
+            "network_cls": ExampleNN_FREM,
+            "num_epochs": EPOCHS,
+            "network_params": {"input_size": inp_dim, "output_size": 1},
+            "batch_size": BATCH_SIZE,
+        },
+        dict_conversion({"lbd_reg": param}), 
+        X,
+        y,
+        p,
+        folds=FOLDS,
+        eval_handle=evaluate_cont_fairness,
+        seed=SEED,
+    )
+
+    model_dictionary = {"param": param, "result": result.tolist(), "time": run_time}
+    result_dictionary["NN-FREM"] = model_dictionary
+    models.append("NN-FREM")
 
 
 result, run_time = cross_validate(

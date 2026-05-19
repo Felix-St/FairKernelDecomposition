@@ -11,14 +11,14 @@ import json
 plt.rc("font", **{"family": "serif", "serif": ["times"]})
 plt.rc("text", usetex=True)
 
-plt.rc("axes", titlesize=35)
-plt.rc("axes", labelsize=45)
+plt.rc("axes", titlesize=25)
+plt.rc("axes", labelsize=22)
 
 plt.rcParams["axes.grid"] = True
 plt.rcParams["axes.axisbelow"] = True
 
-matplotlib.rc("xtick", labelsize=45)
-matplotlib.rc("ytick", labelsize=45)
+matplotlib.rc("xtick", labelsize=22)
+matplotlib.rc("ytick", labelsize=22)
 
 f = open(
     "./results/" + "Benchmark_Nystroem_Crime" + ".json"
@@ -29,7 +29,7 @@ tmp_data = json.load(f)
 f.close()
 
 
-fig = plt.figure(figsize=(15, 10.7), constrained_layout=True)
+fig = plt.figure(figsize=(10, 7.5), constrained_layout=True)
 gs = fig.add_gridspec(2, 3, height_ratios=[0.08, 1])
 
 
@@ -92,7 +92,7 @@ for mod in tmp_data["MODELS"]:
             xerr=stds[:, i + 1],
             yerr=stds[:, 0],
             capsize=6.75,
-            ms=20.5,
+            ms=12.5,
             dash_joinstyle="round",
             linestyle="dotted",
             marker=marker_dict[mod],
@@ -111,14 +111,14 @@ for mod in tmp_data["MODELS"]:
                 0.94,
                 0.95,
                 str_dataset_short,
-                fontsize=40,
+                fontsize=20,
                 alpha=0.55,
                 transform=axs[i].transAxes,
                 bbox=dict(edgecolor="black", facecolor="white", alpha=0.25),
                 ha="right",
                 va="top",
             )
-f_ax1.set_yticks([0.1,0.13,0.16])
+
 
 handles, labels = get_all_legend_handles_labels([f_ax1])
 
@@ -128,7 +128,7 @@ f_ax1.set_ylabel("MAE")
 l_axs.legend(
     handles,
     labels,
-    fontsize=27.5,
+    fontsize=20,
     loc="center",
     ncol=int(len(labels)),
     frameon=False,

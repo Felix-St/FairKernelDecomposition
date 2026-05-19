@@ -175,7 +175,7 @@ def nystroem_inverse(K_TO_APPROX, alp, components):
         Given Kernel K and reg. alp this approximates the inverse (K+alp\text{Id})^{-1}
         with nystroem with the given number of "components".
 
-        See supplementary.pdf for details
+        See appendix of the paper for details.
 
         Parameters
         ----------
@@ -247,8 +247,7 @@ class FairKernelDecomposition:
             print("Iteration: ", str(i))
 
             # Apply previous projections. More efficient if the Kn is directly
-            # computed without storing the transformation explicitly in which case this can
-            # replaced be omitted (see lines )
+            # computed without storing the transformation explicitly in which case this can be omitted 
             Kn = (kernel_matrix) @ self.transformation
             dim_attr = attr_to_remove.ndim
 

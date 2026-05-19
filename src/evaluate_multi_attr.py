@@ -120,7 +120,7 @@ result_dictionary = {
 
 fname = (
     "./results/"
-    + "Multi_Attr_Crime_Jul28_"
+    + "Benchmark_multi_protected_"
     + "_"
     + str(datetime.now()).replace(":", "_")
     + "_"

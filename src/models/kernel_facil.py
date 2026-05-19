@@ -2,9 +2,8 @@ from sklearn.metrics.pairwise import pairwise_kernels
 from sklearn.kernel_ridge import KernelRidge
 import numpy as np
 
-# The original Matlab code is available here: http://isp.uv.es/ by Adrian Perez-Suay.
-# Below is a version which the author translated to python.
-class FairKernelLearningKRR:  
+
+class FairKernelLearningKRR:  # Translated the Matlab code available at http://isp.uv.es/ by Adrian Perez-Suay
     def __init__(self, alpha, gamma):
         self.alpha = alpha
         self.gamma = gamma

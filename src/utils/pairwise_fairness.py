@@ -1,4 +1,4 @@
-#  Implementation of pairwise fairness measure based on: 
+#  Implementation of pairwise fairness measure based on:
 #  https://aaai.org/papers/05248-pairwise-fairness-for-ranking-and-regression/
 #  https://github.com/google-research/google-research/blob/master/pairwise_fairness/regression_crime.ipynb
 

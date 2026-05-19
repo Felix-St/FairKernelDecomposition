@@ -55,7 +55,7 @@ class kde_fair:
 ##################################################################################
 
 
-# Newly added interface to access the fairness measure.
+# Interface to access the fairness measure
 def gdp(y,p):
     test_sol = 1e-3 # Basically binning if I understand correctly
     x_appro = torch.arange(test_sol, 1-test_sol, test_sol)

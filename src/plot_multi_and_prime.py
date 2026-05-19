@@ -12,16 +12,16 @@ plt.rc("font", **{"family": "serif", "serif": ["times"]})
 plt.rc("text", usetex=True)
 
 plt.rc("axes", titlesize=25)
-plt.rc("axes", labelsize=30)
+plt.rc("axes", labelsize=22)
 
 plt.rcParams["axes.grid"] = True
 plt.rcParams["axes.axisbelow"] = True
 
-matplotlib.rc("xtick", labelsize=24)
-matplotlib.rc("ytick", labelsize=24)
+matplotlib.rc("xtick", labelsize=22)
+matplotlib.rc("ytick", labelsize=22)
 
-# Create figure and 2x3 grid
-fig = plt.figure(figsize=(17, 9))
+# Create figure and grid
+fig = plt.figure(figsize=(17, 8.5))
 gs = gridspec.GridSpec(
     4,
     3,
@@ -116,13 +116,13 @@ plt.rc("font", **{"family": "serif", "serif": ["times"]})
 plt.rc("text", usetex=True)
 
 plt.rc("axes", titlesize=25)
-plt.rc("axes", labelsize=30)
+plt.rc("axes", labelsize=22)
 
 plt.rcParams["axes.grid"] = True
 plt.rcParams["axes.axisbelow"] = True
 
-matplotlib.rc("xtick", labelsize=24)
-matplotlib.rc("ytick", labelsize=24)
+matplotlib.rc("xtick", labelsize=22)
+matplotlib.rc("ytick", labelsize=22)
 
 fname_alpha = "Benchmark_alpha_prime_influence"
 
@@ -180,7 +180,7 @@ for IT in range(len(data["ITER"])):
                 avg_over_folds[0, 0] - 0.005,
             ),  # position of text
             arrowprops=dict(arrowstyle="-", linewidth=2, linestyle="--"),
-            fontsize=32,
+            fontsize=25,
         )
 
         ax_right.annotate(
@@ -191,7 +191,7 @@ for IT in range(len(data["ITER"])):
                 avg_over_folds[-1, 0] + 0.003,
             ),  # position of text
             arrowprops=dict(arrowstyle="-", linewidth=2, linestyle="--"),
-            fontsize=32,
+            fontsize=25,
         )
 
 
@@ -223,9 +223,9 @@ ax_middle.set_xticks([])
 ax_middle.set_yticks([])
 ax_middle.set_frame_on(False)
 
-# Adjust limits so the line is centered vertically
-# ax_middle.set_xlim(0, 1)
-# ax_middle.set_ylim(0, 1)
+# Optional: adjust limits so the line is centered vertically
+ax_middle.set_xlim(0, 1)
+ax_middle.set_ylim(0, 1)
 
 
 ax_letter_left.text(
@@ -233,7 +233,7 @@ ax_letter_left.text(
     0,
     "(a)",
     transform=ax_letter_left.transAxes,
-    fontsize=34,
+    fontsize=30,
     fontweight="bold",
     ha="center",
     va="top",
@@ -244,7 +244,7 @@ ax_letter_right.text(
     0,
     "(b)",
     transform=ax_letter_right.transAxes,
-    fontsize=34,
+    fontsize=30,
     fontweight="bold",
     ha="center",
     va="top",

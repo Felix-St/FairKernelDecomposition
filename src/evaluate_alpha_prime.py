@@ -49,7 +49,7 @@ res_dict = {"KRR": result_krr.tolist(), "ITER": ITER, "alpha_primes": vals}
 
 
 with open(
-    "./results/alpha_prime_result_" + str(datetime.now()).replace(":", "_") + ".json",
+    "./results/Benchmark_alpha_prime_influence_" + str(datetime.now()).replace(":", "_") + ".json",
     "w",
 ) as filepath:
     json.dump(res_dict, filepath, indent=4)

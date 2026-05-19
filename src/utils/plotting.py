@@ -1,4 +1,3 @@
-# This a utility-only file to facilitate plotting.
 import numpy as np
 from matplotlib import rc
 import matplotlib as mpl
@@ -32,11 +31,14 @@ dict_translate = {
 color_dict = {
     "KRR-FKD": "#17becf",
     "SVR-FKD": "#ff7f0e",
+    "SVR-INPL": "#e29552",
     "KRR-FKL": "#8cbb26",
     "NN-HGR": "#d46a6a",
+    "NN-HGR-L": "#4F4195",
     "SVR-FKD-CrimeSingle": "#ff7f0e",
     "SVR-FKD-CrimeMulti": "#17becf",
     "DUMMY": "#e377c2",
+     "NN-FREM" : "tab:red",
 }
 
 marker_dict = {
@@ -44,7 +46,10 @@ marker_dict = {
     "SVR-FKD-CrimeSingle": "o",
     "SVR-FKD-CrimeMulti": "s",
     "SVR-FKD": "o",
+    "SVR-INPL": "X",
     "NN-HGR": "^",
+    "NN-HGR-L": "^",
+    "NN-FREM" : "x",
     "KRR-FKL": "P",
     "DUMMY": "D",
 }
@@ -52,9 +57,12 @@ marker_dict = {
 linestyle_dict = {
     "KRR-FKD": "dashed",
     "SVR-FKD": "solid",
+    "SVR-INPL": "solid",
     "NN-HGR": "dotted",
+    "NN-HGR-L": "dotted",
     "KRR-FKL": "dashdot",
     "DUMMY": "solid",
+    "NN-FREM" : "solid",
 }
 ##
 

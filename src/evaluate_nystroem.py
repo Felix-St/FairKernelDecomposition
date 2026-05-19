@@ -39,7 +39,7 @@ def evaluate_cont_fairness(y_hat, y_true, prot_attr):
 
 
 # Load dataset
-dataset = "Crime"
+dataset = "Crime" #ACSIncome #ACSTravelTime
 X, y, p = load_dataset(dataset)
 inp_dim = X.shape[-1]
 
@@ -68,12 +68,34 @@ models = []
 measures = ["HGR [DP]", "GDP [DP]", "PF [EO]"]
 
 
-fixed_param_per_method = {
-"SVR": (0.01, 0.05, 0.75),  # epsilon, gamma, C
-}
-param_dict = {
-    "SVR-FKD": [0, 5, 30, 45, 60, 80],
-}
+if dataset == "Crime":
+    nystroem = None
+    fixed_param_per_method = {
+        "SVR": (0.01, 0.05, 0.75),  # epsilon, gamma, C
+    }
+    param_dict = {
+        "SVR-FKD": [0, 5, 30, 45, 60, 80],
+    }
+
+elif dataset == "ACSIncome":
+    nystroem = None
+    fixed_param_per_method = {
+        "SVR": (0.005, 0.05, 0.5),  # epsilon, gamma, C
+    }
+    param_dict = {
+        "SVR-FKD": [0, 45, 60, 80, 100],
+    }
+    
+elif dataset == "ACSTravelTime":
+    nystroem = None
+    fixed_param_per_method = {
+        "SVR": (0.001, 0.01, 0.125),  # epsilon, gamma, C
+    }
+    param_dict = {
+        "SVR-FKD": [0, 45, 60, 100],
+    }
+else:
+    raise Exception("Unknown dataset")
 
 
 # Benchmark for 25, 50 ,75 and 100% of components in nystroem approx.
